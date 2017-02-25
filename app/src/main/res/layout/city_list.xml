@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.example.useralex.csproject.CityListActivity"
-    tools:listitem="@layout/city_list_content" />
+    tools:context="com.example.useralex.csproject.ListActivity"
+    tools:listitem="@layout/old_city_list_content" />

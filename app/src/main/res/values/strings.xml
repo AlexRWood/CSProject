@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CSProject</string>
     <string name="title_city_detail">City Detail</string>
+    <string name="tab_incomplete">Incomplete</string>
+    <string name="tab_complete">Complete</string>
+    <string name="tab_all">All</string>
 </resources>

@@ -1,33 +1,31 @@
 package com.example.useralex.csproject;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 /**
  * An activity representing a single City detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link CityListActivity}.
+ * in a {@link ListActivity}.
  */
-public class CityDetailActivity extends AppCompatActivity {
+public class TaskDetailActivity extends AppCompatActivity {
     private String m_Text = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_city_detail);
+        setContentView(R.layout.activity_task_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
@@ -35,30 +33,7 @@ public class CityDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(CityDetailActivity.this);
-                builder.setTitle("Title");
-
-// Set up the input
-                final EditText input = new EditText(CityDetailActivity.this);
-// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                builder.setView(input);
-
-// Set up the buttons
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        m_Text = input.getText().toString();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
+                Snackbar.make(findViewById(R.id.detail_coordinator_layout), "You clicked the FAB!", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -81,13 +56,22 @@ public class CityDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(CityDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(CityDetailFragment.ARG_ITEM_ID));
-            CityDetailFragment fragment = new CityDetailFragment();
+            arguments.putString("Title",
+                    getIntent().getStringExtra("Title"));
+            arguments.putString("Description",
+                    getIntent().getStringExtra("Description"));
+
+            TaskDetailFragment fragment = new TaskDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.city_detail_container, fragment)
+                    .add(R.id.task_detail_container, fragment)
                     .commit();
+
+            /* This is how he did it with constants. Not sure how
+                getIntent().getStringExtra(GeoDataDetailFragment.LAT)); gets the lat from the item..
+
+            arguments.putString(GeoDataDetailFragment.LAT,
+                    getIntent().getStringExtra(GeoDataDetailFragment.LAT)); */
         }
     }
 
@@ -102,7 +86,7 @@ public class CityDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, CityListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, ListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
