@@ -25,7 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 
 public class AddTaskItemActivity extends AppCompatActivity implements OnMapReadyCallback  {
 
-    private double[] coords = new double[2];
+    public double[] coords = new double[2];
     private EditText mEditTextTitle;
     private EditText mEditTextDescription;
     private Button mButtonAdd;
@@ -50,8 +50,8 @@ public class AddTaskItemActivity extends AppCompatActivity implements OnMapReady
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("Title", mEditTextTitle.getText().toString());
                 returnIntent.putExtra("Description", mEditTextDescription.getText().toString());
-                returnIntent.putExtra("Latitude", String.valueOf(coords[0]));
-                returnIntent.putExtra("Longitude", String.valueOf(coords[1]));
+                returnIntent.putExtra("Latitude", coords[0]);
+                returnIntent.putExtra("Longitude", coords[1]);
                 setResult(Activity.RESULT_OK, returnIntent);
 
                 // Return to parent activity in onActivityResult

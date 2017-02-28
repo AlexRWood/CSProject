@@ -62,7 +62,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             arguments.putString("Description",
                     getIntent().getStringExtra("Description"));
 
-            arguments.putDouble("Latitude", getIntent().getDoubleExtra("latitude", 0));
+            arguments.putDouble("Latitude", getIntent().getDoubleExtra("Latitude", 0));
             arguments.putDouble("Longitude", getIntent().getDoubleExtra("Longitude", 0));
             TaskDetailFragment fragment = new TaskDetailFragment();
             fragment.setArguments(arguments);

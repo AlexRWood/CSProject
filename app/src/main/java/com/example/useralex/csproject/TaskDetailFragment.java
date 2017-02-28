@@ -65,7 +65,7 @@ public class TaskDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.city_detail)).setText(mItem.getDescription() + mItem.getLongitude() + mItem.getLatitude());
+            ((TextView) rootView.findViewById(R.id.city_detail)).setText(mItem.getDescription() + "\n" + mItem.getLongitude() + "\n" + mItem.getLatitude());
         }
 
         return rootView;

@@ -185,7 +185,7 @@ public class ListActivity extends AppCompatActivity {
                                 data.getStringExtra("Title"),
                                 data.getStringExtra("Description"),
                                 data.getDoubleExtra("Latitude", 0),
-                                data.getDoubleExtra("longitude", 0)
+                                data.getDoubleExtra("Longitude", 0)
                         )
                 );
                 updateList();
