@@ -21,7 +21,8 @@ import android.view.MenuItem;
  */
 public class TaskDetailActivity extends AppCompatActivity {
     private String m_Text = "";
-
+    private double latitude;
+    private double longitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +62,8 @@ public class TaskDetailActivity extends AppCompatActivity {
             arguments.putString("Description",
                     getIntent().getStringExtra("Description"));
 
+            arguments.putDouble("Latitude", getIntent().getDoubleExtra("latitude", 0));
+            arguments.putDouble("Longitude", getIntent().getDoubleExtra("Longitude", 0));
             TaskDetailFragment fragment = new TaskDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

@@ -183,7 +183,9 @@ public class ListActivity extends AppCompatActivity {
                 mDataModel.addItem(
                         new TaskItem(
                                 data.getStringExtra("Title"),
-                                data.getStringExtra("Description")
+                                data.getStringExtra("Description"),
+                                data.getDoubleExtra("Latitude", 0),
+                                data.getDoubleExtra("longitude", 0)
                         )
                 );
                 updateList();
@@ -265,7 +267,8 @@ public class ListActivity extends AppCompatActivity {
                         intent.putExtra("Description", holder.mItem.getDescription());
                         intent.putExtra("Title", holder.mItem.getTitle());
                         intent.putExtra("Status", holder.mItem.getStatus());
-
+                        intent.putExtra("Latitude", holder.mItem.getLatitude());
+                        intent.putExtra("Longitude", holder.mItem.getLongitude());
                         context.startActivity(intent);
                     }
                 }

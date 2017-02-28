@@ -45,7 +45,9 @@ public class TaskDetailFragment extends Fragment {
 
             mItem = new TaskDataModel.TaskItem(
                     getArguments().getString("Title"),
-                    getArguments().getString("Description")
+                    getArguments().getString("Description"),
+                    getArguments().getDouble("Latitude"),
+                    getArguments().getDouble("Longitude")
             );
 
             Activity activity = this.getActivity();

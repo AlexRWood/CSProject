@@ -108,10 +108,14 @@ public class TaskDataModel {
         private String title;
         private String description;
         private int status;
+        private double latitude;
+        private double longitude;
 
-        public TaskItem(String title, String description) {
+        public TaskItem(String title, String description, double latitude, double longitude) {
             this.title = title;
             this.description = description;
+            this.latitude = latitude;
+            this.longitude = longitude;
             this.status = INCOMPLETE;
         }
 
@@ -125,6 +129,8 @@ public class TaskDataModel {
         public String getTitle() { return this.title; }
         public String getDescription() { return this.description; }
         public int getStatus() { return this.status; }
+        public double getLatitude(){return this.latitude;}
+        public double getLongitude() { return  this.longitude; }
         public JSONObject toJSON() {
             JSONObject obj = new JSONObject();
 
@@ -132,6 +138,8 @@ public class TaskDataModel {
                 obj.put("Title", this.title);
                 obj.put("Description", this.description);
                 obj.put("Status", this.status);
+                obj.put("Latitude", this.latitude);
+                obj.put("Longitude", this.longitude);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
