@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.FloatingActionButton;
@@ -221,9 +222,14 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(lm);
         mAdapter = new SimpleItemRecyclerViewAdapter(mTaskList);
         recyclerView.setAdapter(mAdapter);
+
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(recyclerView.getContext(), lm.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     public class SimpleItemRecyclerViewAdapter
