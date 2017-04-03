@@ -3,12 +3,16 @@ package com.example.useralex.csproject;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -28,12 +32,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+
+import static android.os.Environment.getExternalStoragePublicDirectory;
 
 /**
  * An activity representing a list of tasks. This activity
@@ -48,6 +57,9 @@ public class ListActivity extends AppCompatActivity {
     private String TAG = "ListActivity";
     private String LIST_FILE = "tasklist";
     private int ADD_TASK_ITEM_RC = 1;
+    private static final int REQUEST_TAKE_PHOTO = 2;
+    private String mCurrentPhotoPath;
+    private int mTabPosition;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -82,11 +94,15 @@ public class ListActivity extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray(str);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject taskItem = jsonArray.getJSONObject(i);
+                String pictureURL = taskItem.getString("PictureURL");
                 mDataModel.addItem(
                         new TaskItem(
                                 taskItem.getString("Title"),
                                 taskItem.getString("Description"),
-                                taskItem.getInt("Status")
+                                taskItem.getInt("Status"),
+                                taskItem.getDouble("Latitude"),
+                                taskItem.getDouble("Longitude"),
+                                taskItem.getString("PictureURL")
                         )
                 );
             }
@@ -191,7 +207,25 @@ public class ListActivity extends AppCompatActivity {
                 );
                 updateList();
             }
+        } else if (requestCode == REQUEST_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                galleryAddPic();
+            }
         }
+
+        // return tabs to their position
+        if (mTabs != null) {
+            Log.d(TAG, "mTabPosition " + mTabPosition);
+            mTabs.getTabAt(mTabPosition).select();
+        }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getApplicationContext().sendBroadcast(mediaScanIntent);
     }
 
     // Again.. Couldnt really figure this out. but the file save method seems to work alright.
@@ -206,7 +240,8 @@ public class ListActivity extends AppCompatActivity {
     // Used to filter the list in the adapter based on tab position.
     protected void updateList() {
         if (mTabs == null) return;
-        switch (mTabs.getSelectedTabPosition()) {
+        mTabPosition = mTabs.getSelectedTabPosition();
+        switch (mTabPosition) {
             case 0:
                 mAdapter.swapList(mDataModel.getIncomplete());
                 break;
@@ -268,6 +303,7 @@ public class ListActivity extends AppCompatActivity {
                                 .commit();
                         */
                     } else {
+                        Log.d(TAG, "onClick1: " + holder.mItem.getPictureURL());
                         Context context = v.getContext();
                         Intent intent = new Intent(context, TaskDetailActivity.class);
                         intent.putExtra("Description", holder.mItem.getDescription());
@@ -275,6 +311,7 @@ public class ListActivity extends AppCompatActivity {
                         intent.putExtra("Status", holder.mItem.getStatus());
                         intent.putExtra("Latitude", holder.mItem.getLatitude());
                         intent.putExtra("Longitude", holder.mItem.getLongitude());
+                        intent.putExtra("PictureURL", holder.mItem.getPictureURL());
                         context.startActivity(intent);
                     }
                 }
@@ -283,7 +320,6 @@ public class ListActivity extends AppCompatActivity {
             holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Toast.makeText(getApplicationContext(), "Long click!", Toast.LENGTH_SHORT).show();
                     AlertDialog.Builder builder = new AlertDialog.Builder(ListActivity.this);
                     // Add to @string constants later
                     builder.setMessage("What would you like to do?");
@@ -292,8 +328,50 @@ public class ListActivity extends AppCompatActivity {
                     if (holder.mItem.getStatus() != TaskDataModel.COMPLETE) {
                         builder.setPositiveButton("Set Complete", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                holder.mItem.setComplete();
-                                updateList();
+                                AlertDialog.Builder builder2 = new AlertDialog.Builder(ListActivity.this);
+                                builder2.setMessage("Would you like to capture this memory?");
+                                builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        // Launch Camera intent
+                                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                        // Ensure there's a camera activity to handle the intent
+                                        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                            File photoFile = null;
+                                            try {
+                                                photoFile = createImageFile();
+                                            } catch (IOException ex) {
+                                                Log.d("tag", "Cam exception");
+                                                Log.d("Error", ex.toString());
+                                            }
+                                            // Continue only if the file was successfully created
+                                            if (photoFile != null) {
+                                                Log.d(TAG, "onClick: " + photoFile);
+                                                Uri photoURI = FileProvider.getUriForFile(
+                                                        getApplicationContext(),
+                                                        "com.example.useralex.fileprovider",
+                                                        photoFile
+                                                );
+                                                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                                                // Update item and list
+                                                holder.mItem.setPictureURL(mCurrentPhotoPath);
+                                                holder.mItem.setComplete();
+                                                updateList();
+                                            }
+                                        }
+                                    }
+                                });
+                                builder2.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        // Update item and list
+                                        holder.mItem.setComplete();
+                                        updateList();
+                                    }
+                                });
+
+                                builder2.create().show();
                             }
                         });
                     } else {
@@ -301,6 +379,7 @@ public class ListActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 holder.mItem.setIncomplete();
+                                holder.mItem.setPictureURL("");
                                 updateList();
                             }
                         });
@@ -331,6 +410,21 @@ public class ListActivity extends AppCompatActivity {
             // fine now.
             if (mItems == null) return 0;
             return mItems.size();
+        }
+
+        private File createImageFile() throws IOException {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            Log.d("tag", "StorageDir == " + storageDir);
+            File image = File.createTempFile(
+                    imageFileName, // prefix
+                    ".jpg", // suffix
+                    storageDir // directory
+            );
+
+            mCurrentPhotoPath = image.getAbsolutePath();
+            return image;
         }
 
         public void swapList(List<TaskItem> items) {
