@@ -1,9 +1,13 @@
 package com.example.useralex.csproject;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,7 @@ import com.example.useralex.csproject.dummy.DummyContent;
     // It has is used in taskDetailActivity.
 public class TaskDetailFragment extends Fragment {
 
+    private static final String TAG = "TaskDetailFragment";
     private TaskDataModel.TaskItem mItem;
 
     /**
@@ -53,7 +58,12 @@ public class TaskDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null && mItem != null) {
+                String bg = getArguments().getString("PictureURL");
                 appBarLayout.setTitle(mItem.getTitle());
+                if (!"".equals(bg)) {
+                    Drawable bgDrawable = Drawable.createFromPath(bg);
+                    appBarLayout.setBackground(bgDrawable);
+                }
             }
         }
     }
