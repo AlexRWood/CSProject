@@ -110,19 +110,44 @@ public class TaskDataModel {
         private int status;
         private double latitude;
         private double longitude;
+        private String pictureURL;
 
+        // Used for creating new items
         public TaskItem(String title, String description, double latitude, double longitude) {
             this.title = title;
             this.description = description;
             this.latitude = latitude;
             this.longitude = longitude;
             this.status = INCOMPLETE;
+            this.pictureURL = "";
         }
-
-        public TaskItem(String title, String description, int status) {
+        // Used for creating new items.
+        public TaskItem(String title, String description) {
             this.title = title;
             this.description = description;
+            this.latitude = -1;
+            this.longitude = -1;
+            this.status = INCOMPLETE;
+            this.pictureURL = "";
+        }
+
+        // Used for loading items from JSON
+        public TaskItem(String title, String description, int status, double latitude, double longitude, String picURL) {
+            this.title = title;
+            this.description = description;
+            this.latitude = latitude;
+            this.longitude = longitude;
             this.status = status;
+            this.pictureURL = picURL;
+        }
+        // Used for loading items from JSON.
+        public TaskItem(String title, String description, int status, String picURL) {
+            this.title = title;
+            this.description = description;
+            this.latitude = -1;
+            this.longitude = -1;
+            this.status = status;
+            this.pictureURL = picURL;
         }
 
         // Getters
@@ -131,6 +156,7 @@ public class TaskDataModel {
         public int getStatus() { return this.status; }
         public double getLatitude(){return this.latitude;}
         public double getLongitude() { return  this.longitude; }
+        public String getPictureURL() { return this.pictureURL; }
         public JSONObject toJSON() {
             JSONObject obj = new JSONObject();
 
@@ -140,6 +166,7 @@ public class TaskDataModel {
                 obj.put("Status", this.status);
                 obj.put("Latitude", this.latitude);
                 obj.put("Longitude", this.longitude);
+                obj.put("PictureURL", this.pictureURL);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -150,6 +177,9 @@ public class TaskDataModel {
         // Setters
         public void setTitle(String title) { this.title = title; }
         public void setDescription(String description) { this.description = description; }
+        public void setLatitude(double lat) { this.latitude = lat; }
+        public void setLongitude(double lon) { this.longitude = lon; }
+        public void setPictureURL(String url) { this.pictureURL = url; }
         public void setIncomplete() { this.status = INCOMPLETE; }
         public void setComplete() { this.status = COMPLETE; }
         public void setCompleteable() { this.status = COMPLETABLE; }
