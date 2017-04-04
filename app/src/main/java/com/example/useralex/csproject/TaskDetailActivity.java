@@ -72,9 +72,6 @@ public class TaskDetailActivity extends AppCompatActivity {
             arguments.putString(GeoDataDetailFragment.LAT,
                     getIntent().getStringExtra(GeoDataDetailFragment.LAT)); */
         }
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
     }
 
