@@ -13,6 +13,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import com.google.android.gms.maps.MapFragment;
+
 /**
  * An activity representing a single City detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
@@ -30,13 +32,6 @@ public class TaskDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(findViewById(R.id.detail_coordinator_layout), "You clicked the FAB!", Snackbar.LENGTH_SHORT).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -77,6 +72,10 @@ public class TaskDetailActivity extends AppCompatActivity {
             arguments.putString(GeoDataDetailFragment.LAT,
                     getIntent().getStringExtra(GeoDataDetailFragment.LAT)); */
         }
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
     }
 
     @Override

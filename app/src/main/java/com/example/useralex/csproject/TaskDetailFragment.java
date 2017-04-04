@@ -66,6 +66,7 @@ public class TaskDetailFragment extends Fragment {
                 }
             }
         }
+
     }
 
     @Override
