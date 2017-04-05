@@ -1,5 +1,6 @@
 package com.example.useralex.csproject;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.maps.MapFragment;
 
 /**
@@ -59,6 +62,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
             arguments.putDouble("Latitude", getIntent().getDoubleExtra("Latitude", 0));
             arguments.putDouble("Longitude", getIntent().getDoubleExtra("Longitude", 0));
+            arguments.putDouble("Longitude", getIntent().getDoubleExtra("Longitude", 0));
             arguments.putString("PictureURL", getIntent().getStringExtra("PictureURL"));
             TaskDetailFragment fragment = new TaskDetailFragment();
             fragment.setArguments(arguments);
@@ -72,6 +76,12 @@ public class TaskDetailActivity extends AppCompatActivity {
             arguments.putString(GeoDataDetailFragment.LAT,
                     getIntent().getStringExtra(GeoDataDetailFragment.LAT)); */
         }
+        Geofence geofence = new Geofence.Builder()
+                .setRequestId(  getIntent().getStringExtra("Title")) // Geofence ID
+                .setCircularRegion( getIntent().getDoubleExtra("Longitude", 0),  getIntent().getDoubleExtra("Longitude", 0), 100) // defining fence region
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setTransitionTypes( Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT )
+                .build();
 
     }
 
@@ -91,4 +101,5 @@ public class TaskDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
